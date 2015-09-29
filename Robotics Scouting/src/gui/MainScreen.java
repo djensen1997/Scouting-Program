@@ -10,6 +10,14 @@ import utilities.*;
 
 import javax.swing.*;
 
+/**
+ * This is the Main Class for the Program.
+ * It controls the main Frame for the gui and has direct access to
+ * all aspects of the program.
+ * 
+ * @author DaneJensen
+ *
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MainScreen {
 
@@ -32,8 +40,7 @@ public class MainScreen {
 
 	private JMenuItem[] fileItems, topStatsItems, competitionItems, modeItems;
 
-	private String savePath = "/Users/" + System.getProperty("user.name")
-			+ "/Documents/Scouting Info/";
+	private String savePath = "/Users/" + System.getProperty("user.name") + "/Documents/Scouting Info/";
 
 	private JLabel[] l = new JLabel[7];
 
@@ -83,15 +90,21 @@ public class MainScreen {
 	private TreeMap<String, ArrayList<ArrayList<String>>> competingTeamsInfo = new TreeMap<String, ArrayList<ArrayList<String>>>();
 
 	private JButton addTeam = new JButton("Yes");
-	
+
 	private JButton doNotAddTeam = new JButton("No");
-	
+
+	/**
+	 * The main constructor for the class, requires an action listener to be
+	 * refrenced for the rest of the program
+	 * 
+	 * @param myActionListener The Action Listener for the program
+	 */
 	public MainScreen(MyActionListener myActionListener) {
 
 		this.myActionListener = myActionListener;
-		
+
 		addTeam.addActionListener(this.myActionListener);
-		
+
 		doNotAddTeam.addActionListener(this.myActionListener);
 
 		getInformation();
@@ -127,8 +140,7 @@ public class MainScreen {
 
 		read.addActionListener(myActionListener);
 
-		f = new JFrame("Team " + config.get("Team Number")
-				+ " Scouting Readout" + config.get("Current Competition"));
+		f = new JFrame("Team " + config.get("Team Number") + " Scouting Readout" + config.get("Current Competition"));
 
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -142,19 +154,71 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * This Button is used to give the number of a team to the data base,
+	 * which then opens up a new frame that the user can input data on
+	 * pre-defined Metrics
+	 * 
+	 * @return Returns the JButton on the main GUI
+	 */
 	public JButton getReadButton() {
 
 		return read;
 
 	}
-
+	
+	/**
+	 * The map works in 3 levels
+	 * 	-Level 1 is the Main Key (the team number)
+	 * 	-Level 2 is the Match Number (starting at 0 of course)
+	 * 	-Level 3 is the Specific Metric Information
+	 * 
+	 * @return Returns the map of all the teams
+	 */
 	public TreeMap<String, ArrayList<ArrayList<String>>> getAllTeamInfo() {
 
 		return competingTeamsInfo;
 
 	}
+	
+	/**
+	 * 
+	 * @return Returns the Array of Input Text Fields that have the team numbers in them
+	 */
+	public JTextField[] getTeamNumberInputFields() {
 
-	/*public void sendTeamNumber() {
+		return t;
+
+	}
+
+	/**
+	 * Adds the inputed team to the data base and immediately updates the
+	 * Teams Scouted.txt file to reflect the addition
+	 * 
+	 * @param teamNumber The team Number to be added to the database
+	 */
+	public void addTeam(String teamNumber) {
+
+		competingTeamsInfo.put(teamNumber, new ArrayList<ArrayList<String>>());
+
+		saveTeamInfo();
+
+		mainMenu();
+
+		sendTeamNumber(teamNumber);
+
+	}
+
+	/**
+	 * "Sends" the specified team number to the Match Scout class for the
+	 * user to input a new match for this team into the database
+	 * 
+	 * If a match in the database is not found, the program prompts the user to
+	 * add it to the database
+	 * 
+	 * @param teamNumber The team number being scouted
+	 */
+	public void sendTeamNumber(String teamNumber) {
 
 		if (!competingTeamsInfo.containsKey(teamNumber)) {
 
@@ -162,111 +226,173 @@ public class MainScreen {
 
 		} else {
 
-			if (true) {//will change eventually
+			if (true) {// will change eventually
 
-				data = new teamData(team, here, stats, gameYear,
-						currentCompetition, x);
+				MatchScout data = new MatchScout(competingTeamsInfo, teamNumber, metrics, config, 0, myActionListener,
+						f);
 
-			}/*
-			 * else if (Mode.equals("Pit")) {
-			 * 
-			 * @SuppressWarnings("unused") pit_scouting scout = new
-			 * pit_scouting(team.get(here), gameYear, currentCompetition);
-			 * 
-			 * }
-			 
+				myActionListener.addNewMatchScout(data);
 
-			// previous = teamNumber;
+			} /*
+				 * else if (Mode.equals("Pit")) {
+				 * 
+				 * @SuppressWarnings("unused") pit_scouting scout = new
+				 * pit_scouting(team.get(here), gameYear, currentCompetition);
+				 * 
+				 * }
+				 */
 
 		}
 
-	}*/
+	}
 
+	/**
+	 * Creates the menu that prompts the user to add an unrecognized team to the
+	 * database
+	 */
 	public void newTeamMenu() {
-		
+
 		utilityFrame = new JFrame("");
 
 		JPanel tempPanel = new JPanel(new BorderLayout());
+
 		JPanel tempPanel2 = new JPanel();
+
 		tempPanel2.add(l[0]);
+
 		tempPanel2.add(l[2]);
+
 		tempPanel2.add(addTeam);
+
 		tempPanel2.add(doNotAddTeam);
+
 		tempPanel.add(tempPanel2, BorderLayout.CENTER);
+
 		tempPanel.add(back, BorderLayout.SOUTH);
-		
+
+		utilityFrame.add(tempPanel);
+
+		utilityFrame.setLocation(0, f.getHeight() / 3);
+
+		utilityFrame.setSize(f.getWidth(), f.getHeight() * 2 / 3);
+
+		utilityFrame.setUndecorated(true);
+
+		utilityFrame.setVisible(true);
 
 	}
 
-	/*public void getTeams() {
+	/**
+	 * Updates the Teams Scouted.txt file to accurately reflect which teams
+	 * are in the data base for a specific event
+	 */
+	private void saveTeamInfo() {
 
-		String[] temp = reader.readFile(savePath + config.get("Game Year")
-				+ "/" + config.get("Current Competition")
-				+ "/Teams Scouted.txt");
+		String[] teams = new String[competingTeamsInfo.size()];
+
+		int i = 0;
+
+		for (String key : competingTeamsInfo.keySet()) {
+
+			teams[i] = key;
+
+			// TODO Have Program Output Current Info on Teams (Might be
+			// Unnessisary)
+
+			i += 1;
+
+		}
+
+		writer.writeFile(
+				savePath + config.get("Game Year") + "/" + config.get("Current Competition") + "/Teams Scouted.txt",
+				teams);
+
+	}
+
+	/**
+	 * Gets the Team Info for an Event
+	 */
+	private void getTeams() {
+
+		String[] temp = reader.readFile(
+				savePath + config.get("Game Year") + "/" + config.get("Current Competition") + "/Teams Scouted.txt");
 
 		for (int i = 0; i < temp.length; i++) {
 
-			competingTeamsInfo.put(temp[i], new ArrayList<ArrayList<String>>());
+			if (temp[i] != null)
+				competingTeamsInfo.put(temp[i], new ArrayList<ArrayList<String>>());
 
 		}
 
 		for (String key : competingTeamsInfo.keySet()) {
 
-			String[] teamInfo = reader.readFile(savePath
-					+ config.get("Game Year") + "/"
-					+ config.get("Current Competition") + "/Team Data/" + key
-					+ ".txt");
+			String[] teamInfo = reader.readFile(savePath + config.get("Game Year") + "/"
+					+ config.get("Current Competition") + "/Team Data/" + key + ".txt");
 
-			try {
+			if (teamInfo[0] != null) {
+				for (int i = 0; i < teamInfo.length; i++) {
 
-				//TODO figure this mess out
-				String num;
-				while ((num = fr.readLine()) != null) {
-					// skipLine = true;
-					ArrayList<String> temp = new ArrayList<String>();
-					String[] pa = num.split(": ");
+					ArrayList<String> matchInfo = new ArrayList<String>();
+
+					String[] pa = teamInfo[i].split(": ");
 					if (!(pa[0].equals("Match Number"))) {
-						temp.add(pa[1]);
+						matchInfo.add(pa[1]);
+					} else {
+
+						i += 1;
+
 					}
-					for (int i = 0; i < metrics.size(); i++) {
-						String line = fr.readLine();
-						// String delims = "{: }";
-						if (line != null) {
-							String[] parts = line.split(": ");
-							if (parts[0].equals("Match Number")) {
+					for (int index = 0; index < metrics.size(); index++) {
 
-								i = metrics.size();
+						String[] parts = teamInfo[i].split(": ");
 
-							} else {
-								temp.add(parts[1]);
-							}
+						if (parts[0].equals("Match Number")) {
+
+							System.err.println(
+									"Unexpected Value ---> Match Number <--- most likely caused by out of date match");
+							System.err.println("Skipping Team" + key);
+							break;
+
 						} else {
 
-							i = metrics.size();
-							// skipLine = false;
+							matchInfo.add(parts[1]);
 
 						}
 
 					}
-					// if(skipLine){
 
-					// fr.readLine();
+					competingTeamsInfo.get(key).add(matchInfo);
 
-					// }
-					fr.readLine();
-					fr.readLine();
-					team.add(temp);
 				}
-				fr.close();
-			} catch (Exception e) {
-				System.err.println("Error Alert ----->    " + e.getMessage());
 			}
-			teams.add(team);
 		}
 
-	}*/
-	
+	}
 
+	/**
+	 * 
+	 * @return Returns the "Yes I would like to add that team" button
+	 */
+	public JButton getAddTeamButton() {
+
+		return addTeam;
+
+	}
+	
+	/**
+	 * 
+	 * @return Returns the "NO, i would not like to add that team" button
+	 */
+	public JButton getDoNotAddTeamButton() {
+
+		return doNotAddTeam;
+
+	}
+
+	/**
+	 * Called When the program is first Opened, reads the config, game year, competitions and
+	 * teams scouted files to get all the information from the database
+	 */
 	private void getInformation() {
 
 		String[] temp = reader.readFile(savePath + "Config.txt", ": ");
@@ -285,15 +411,18 @@ public class MainScreen {
 
 		getCompetitions();
 
+		getTeams();
+
 		prepMenuBar();
 
 	}
 
+	/**
+	 * Reads the metric in the metrics.txt file for the current game year
+	 */
 	private void readMetrics() {
 		metrics.clear();
-
-		String[] temp = reader.readFile(savePath + config.get("Game Year")
-				+ "/metrics/metrics.txt");
+		String[] temp = reader.readFile(savePath + config.get("Game Year") + "/metrics/metrics.txt");
 
 		for (int i = 0; i < temp.length; i++) {
 
@@ -303,9 +432,10 @@ public class MainScreen {
 
 		for (int i = 0; i < metrics.size(); i++) {
 
+			
+			
 			String[] metricInfo = reader.readFile(
-					savePath + config.get("Game Year") + "/metrics/"
-							+ metrics.get(i).getName() + ".txt", ": ");
+					savePath + config.get("Game Year") + "/metrics/" + metrics.get(i).getName() + ".txt", ": ");
 
 			if (metricInfo.length < 4) {
 
@@ -315,9 +445,9 @@ public class MainScreen {
 
 				metrics.get(i).setInputType(metricInfo[1]);
 
-				metrics.get(i).setMaxValue(Integer.parseInt(metricInfo[2]));
+				metrics.get(i).setMaxValue(Integer.parseInt(metricInfo[3]));
 
-				metrics.get(i).setMinValue(Integer.parseInt(metricInfo[3]));
+				metrics.get(i).setMinValue(Integer.parseInt(metricInfo[2]));
 
 				if (metricInfo.length > 4) {// WIP, combo box
 
@@ -328,19 +458,22 @@ public class MainScreen {
 					}
 
 				}
-
+				
 			}
 
 		}
 
 	}
 
+	/**
+	 * Reads the Competitions.txt file to get all known competitions for the
+	 * current game year
+	 */
 	private void getCompetitions() {
 
 		competitions.clear();
 
-		String[] temp = reader.readFile(savePath + config.get("Game Year")
-				+ "/Competitions.txt");
+		String[] temp = reader.readFile(savePath + config.get("Game Year") + "/Competitions.txt");
 
 		for (int i = 0; i < temp.length; i++) {
 
@@ -348,37 +481,53 @@ public class MainScreen {
 
 		}
 
-		config.put(
-				"Current Competition",
-				reader.readFile(savePath + config.get("Game Year")
-						+ "/currentComp.txt")[0]);
+		config.put("Current Competition", reader.readFile(savePath + config.get("Game Year") + "/currentComp.txt")[0]);
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the File Drop-down Menu Items
+	 */
 	public JMenuItem[] getFileItems() {
 
 		return fileItems;
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the Scouting Mode Drop-Down Meny Items
+	 */
 	public JMenuItem[] getModeItems() {
 
 		return modeItems;
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the Competition Drop-Down Menu Items
+	 */
 	public JMenuItem[] getCompetitionItems() {
 
 		return competitionItems;
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the Top Stat Drop - Down Menu Items
+	 */
 	public JMenuItem[] getTopStatsItems() {
 
 		return topStatsItems;
 
 	}
 
+	/**
+	 * Prepares the Menu Bar that appears at the top of the GUI
+	 */
 	private void prepMenuBar() {
 
 		file = new JMenu("File");
@@ -483,6 +632,10 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Returns the GUI to the "Main Menu" or the initial Screen
+	 * when the Program is normally run
+	 */
 	@SuppressWarnings("unused")
 	public void mainMenu() {
 
@@ -494,8 +647,7 @@ public class MainScreen {
 
 		}
 
-		f.setTitle(config.get("Team Number") + " Scouting Readout - "
-				+ config.get("Current Competition"));
+		f.setTitle(config.get("Team Number") + " Scouting Readout - " + config.get("Current Competition"));
 
 		prepMenuBar();
 
@@ -593,6 +745,10 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Prepares the GUI that allows the User to see and change the
+	 * Metric Information.
+	 */
 	public void metricMenu() {
 
 		utilityFrame = new JFrame("");
@@ -611,8 +767,7 @@ public class MainScreen {
 
 		tempPanel2.add(metricWeight);
 
-		String[] IisArray = { "Select Input Method Here", "Text Box",
-				"Buttons", "Slider", "Radio Buttons" };
+		String[] IisArray = { "Select Input Method Here", "Text Box", "Buttons", "Slider", "Radio Buttons" };
 
 		m = new JComboBox(IisArray);
 
@@ -640,24 +795,43 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Pressed in the "New Metric Menu" and is used to add new Metrics
+	 * 
+	 * @return Returns the Add Metric JButton
+	 */
 	public JButton getAddMetricButton() {
 
 		return addMetric;
 
 	}
 
+	/**
+	 * Pressed in the "Metric Menu" and is used to change Metric Settings
+	 * 
+	 * @return Returns the Save Metric Button
+	 */
 	public JButton getSaveMetricButton() {
 
 		return saveMetric;
 
 	}
 
+	/**
+	 * This ArrayList holds all the information on the Metrics, or data points being
+	 * Scouted for
+	 * 
+	 * @return Returns the ArrayList of Metrics
+	 */
 	public ArrayList<Metric> getMetrics() {
 
 		return metrics;
 
 	}
 
+	/**
+	 * The Method Saves the Metric the User is adding to the database
+	 */
 	public void saveMetric() {
 
 		if (metrics.size() == 1 && metrics.get(0).getName() == null) {
@@ -669,11 +843,9 @@ public class MainScreen {
 			metrics.add(new Metric(metricName.getText()));
 
 		}
-		metrics.get(metrics.size() - 1).setInputType(
-				(String) m.getSelectedItem());
+		metrics.get(metrics.size() - 1).setInputType((String) m.getSelectedItem());
 
-		metrics.get(metrics.size() - 1).setMag(
-				Integer.parseInt(metricWeight.getText()));
+		metrics.get(metrics.size() - 1).setMag(Integer.parseInt(metricWeight.getText()));
 
 		metrics.get(metrics.size() - 1).setMaxValue(100);
 
@@ -687,6 +859,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Outputs the Contents of the Metric ArrayList to the metrics.txt file
+	 */
 	private void writeMetrics() {
 
 		String[] temp = new String[metrics.size()];
@@ -697,19 +872,20 @@ public class MainScreen {
 
 		}
 
-		writer.writeFile(savePath + config.get("Game Year")
-				+ "/metrics/metrics.txt", temp);
+		writer.writeFile(savePath + config.get("Game Year") + "/metrics/metrics.txt", temp);
 
 		for (int i = 0; i < metrics.size(); i++) {
 
-			writer.writeFile(savePath + config.get("Game Year") + "/metrics/"
-					+ metrics.get(i).getName() + ".txt", metrics.get(i)
-					.getInfo());
+			writer.writeFile(savePath + config.get("Game Year") + "/metrics/" + metrics.get(i).getName() + ".txt",
+					metrics.get(i).getInfo());
 
 		}
 
 	}
 
+	/**
+	 * Prepares and shows the Menu for adding a new game year to the database
+	 */
 	public void newGameYearMenu() {
 
 		utilityFrame = new JFrame("");
@@ -742,18 +918,39 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * The Add Game Year Button is used when the user has entered in a 
+	 * new game year and wants to add it to the database.
+	 * 
+	 * @return Returns the Add Game Year JButton
+	 */
 	public JButton getAddGameYearButton() {
 
 		return addGameYear;
 
 	}
 
+	/**
+	 * Shows up in almost all Menus, when pressed the program resets to
+	 * the Initial state when normally opened
+	 * 
+	 * @return Returns the back Button
+	 */
 	public JButton getBackButton() {
 
 		return back;
 
 	}
 
+	/**
+	 * Adds a new game Year to the data base, and generates all files required for a game year
+	 * Paths Generated:
+	 * /Scouting Info/game year
+	 * /Scouting Info/game year/metrics
+	 * /Scouting Info/game year/competitions.txt
+	 * /Scouting Info/game year/current competiton.txt
+	 * /Scouting Info/game year/metrics/metrics.txt
+	 */
 	public void addGameYear() {
 
 		utilityFrame.dispose();
@@ -772,6 +969,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Updates Years.txt to reflect all game years in the database
+	 */
 	private void writeGameYears() {
 
 		String[] temp = new String[gameYears.size()];
@@ -786,6 +986,11 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Changes the game Year to a different Year
+	 * 
+	 * @param GameYear the year of the game the user wants to switch to
+	 */
 	private void changeGameYear(String GameYear) {
 
 		config.put("Game Year", GameYear);
@@ -795,6 +1000,8 @@ public class MainScreen {
 		getCompetitions();
 
 		saveConfig();
+		
+		getTeams();
 
 		prepMenuBar();
 
@@ -802,12 +1009,14 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Does the actual Generation of all game year files
+	 */
 	private void generateGameYearFiles() {
 
 		String user = System.getProperty("user.name");
 
-		File gameYearFolder = new File("/Users/" + user
-				+ "/Documents/Scouting Info/" + config.get("Game Year") + "/");
+		File gameYearFolder = new File("/Users/" + user + "/Documents/Scouting Info/" + config.get("Game Year") + "/");
 
 		try {
 			gameYearFolder.mkdir();
@@ -827,13 +1036,15 @@ public class MainScreen {
 
 		if (!metric.exists()) {
 
-			writer.writeFile(savePath + config.get("Game Year")
-					+ "/metrics/metrics.txt", null);
+			writer.writeFile(savePath + config.get("Game Year") + "/metrics/metrics.txt", null);
 
 		}
 
 	}
 
+	/**
+	 * The program Reads the Years.txt file to know what games have existed and stores them in the program
+	 */
 	private void getGameYears() {
 		gameYears.clear();
 
@@ -847,6 +1058,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Updates the config.txt file to reflect changes to the config settings
+	 */
 	private void saveConfig() {
 
 		String[] temp = new String[4];
@@ -867,6 +1081,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Prepares and shows the menu the User inputs new competitions into
+	 */
 	public void newCompetitionMenu() {
 
 		utilityFrame = new JFrame("");
@@ -899,6 +1116,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Adds the User inputed competition to the data base and creates its files
+	 */
 	public void addCompetition() {
 
 		config.put("Current Competition", competitionNameField.getText());
@@ -923,20 +1143,34 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * The add competition button is pressed when the user has inputed a new
+	 * competition into the new competition menu
+	 * 
+	 * @return Returns the Add Competition Button
+	 */
 	public JButton getAddCompetitionButton() {
 
 		return addCompetition;
 
 	}
 
+	/**
+	 * Generates the files for a new competiton
+	 * 
+	 * Files Generated:
+	 * 	/Scouting Info/game year/competition/
+	 *  /Scouting Info/game year/competition/team data/
+	 *  /Scouting Info/game year/competition/Teams Scouted.txt
+	 */
 	private void generateCompetitionFiles() {
 		// Adds the Competition Folder and All Needed Files
 
-		File competitionFolder = new File(savePath + config.get("Game Year")
-				+ "/" + config.get("Current Competition") + "/");
+		File competitionFolder = new File(
+				savePath + config.get("Game Year") + "/" + config.get("Current Competition") + "/");
 
-		File teamData = new File(savePath + config.get("Game Year") + "/"
-				+ config.get("Current Competition") + "/Team Data/");
+		File teamData = new File(
+				savePath + config.get("Game Year") + "/" + config.get("Current Competition") + "/Team Data/");
 
 		try {
 			competitionFolder.mkdir();
@@ -946,9 +1180,8 @@ public class MainScreen {
 		}
 
 		writer.writeFile(
-				savePath + config.get("Game Year") + "/"
-						+ config.get("Current Competition")
-						+ "/Teams Scouted.txt", null);
+				savePath + config.get("Game Year") + "/" + config.get("Current Competition") + "/Teams Scouted.txt",
+				null);
 
 		String[] temp = new String[competitions.size()];
 
@@ -958,18 +1191,19 @@ public class MainScreen {
 
 		}
 
-		writer.writeFile(savePath + config.get("Game Year")
-				+ "/Competitions.txt", temp);
+		writer.writeFile(savePath + config.get("Game Year") + "/Competitions.txt", temp);
 
 		String[] temp1 = new String[1];
 
 		temp1[0] = config.get("Current Competition");
 
-		writer.writeFile(savePath + config.get("Game Year")
-				+ "/currentComp.txt", temp1);
+		writer.writeFile(savePath + config.get("Game Year") + "/currentComp.txt", temp1);
 
 	}
 
+	/**
+	 * A small menu that the user specifies a metric to edit
+	 */
 	public void metricSelector() {
 
 		utilityFrame = new JFrame("");
@@ -1008,12 +1242,21 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the menu of Metrics the User can choose from
+	 */
 	public JComboBox getMetricSelectorMenu() {
 
 		return metricSelectorMenu;
 
 	}
 
+	/**
+	 * Prepares the menu to edit a User Specified Metric
+	 * 
+	 * @param index The Index of the Metric the user wants to edit
+	 */
 	public void changeMetricMenu(int index) {
 
 		utilityFrame = new JFrame("");
@@ -1072,8 +1315,8 @@ public class MainScreen {
 
 		tempPanel2.add(title, g);
 
-		String[] IisArray = { "Select Input Method Here", "Text Box",
-				"Buttons", "Slider", "Not an Option, WIP" };// "Radio Buttons"
+		String[] IisArray = { "Select Input Method Here", "Text Box", "Buttons", "Slider", "Not an Option, WIP" };// "Radio
+																													// Buttons"
 
 		m = new JComboBox(IisArray);
 
@@ -1147,6 +1390,9 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * Saves the changes the user made to the metrics
+	 */
 	public void changeMetrics() {
 
 		utilityFrame.dispose();
@@ -1157,12 +1403,20 @@ public class MainScreen {
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the Text Fields used on the Change Metric Menu
+	 */
 	public JTextField[] getMetricTextFields() {
 
 		return metricTextFields;
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the index of the Metric the user wants to change
+	 */
 	public int getChangeMetricIndex() {
 
 		return changeMetricIndex;

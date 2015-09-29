@@ -3,11 +3,23 @@ package utilities;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-
+/**
+ * A basic File Input System for the Program, Used this instead of constantly calling
+ * a new buffered file reader throughout the program, better to have it in one place
+ * 
+ * @author DaneJensen
+ *
+ */
 public class FileInput {
-
+	/**
+	 * an empty constructor
+	 */
 	public FileInput(){}
-	
+	/**
+	 * 
+	 * @param path the path to the file the program is trying to read
+	 * @return Returns the content of the File requested in the form of a String array
+	 */
 	public String[] readFile(String path){
 		
 		ArrayList<String> input = new ArrayList<String>();
@@ -50,6 +62,14 @@ public class FileInput {
 		
 	}
 	
+	/**
+	 * An alternative to the basic File Reader, this one splits each line based on a deliminator and
+	 * returns all files to the right of the deliminator
+	 * 
+	 * @param path the file path to the file the program is trying to read
+	 * @param Deliminator the string that the program wants to cut the string from
+	 * @return Returns the strings to the right of the deliminator
+	 */
 	public String[] readFile(String path, String Deliminator){
 		
 		ArrayList<String> input = new ArrayList<String>();

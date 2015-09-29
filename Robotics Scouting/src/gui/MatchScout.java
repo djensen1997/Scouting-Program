@@ -1,13 +1,18 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
 import utilities.*;
 import objects.*;
-
+/**
+ * The Frame that holds the Match Sheet for a team
+ * of the User's choosing
+ * 
+ * @author DaneJensen
+ *
+ */
 public class MatchScout implements ChangeListener{
     private JButton saveMatch = new JButton("Submit Stats");
     private JFrame f;
@@ -29,7 +34,16 @@ public class MatchScout implements ChangeListener{
 			+ "/Documents/Scouting Info/";
     private FileOutput writer = new FileOutput();
     private JFrame mainFrame;
-    
+    /**
+     * 
+     * @param teams The TreeMap containing all of the Teams competing in the current Competition
+     * @param key The specific team the user wants to scout
+     * @param metrics The ArrayList that holds all Metric information
+     * @param config The current config the program is running off of
+     * @param xloc The X- Location of the frame, used mainly when the user is scouting multiple teams
+     * @param myActionListener The Action Listener for the program
+     * @param mainFrame The Main JFrame for the program, only used to acquire the dimensions of the screen
+     */
 	public MatchScout(TreeMap<String, ArrayList<ArrayList<String>>> teams,String key,ArrayList<Metric> metrics,TreeMap<String, String> config,int xloc, MyActionListener myActionListener,
 					  JFrame mainFrame){
         
@@ -47,6 +61,8 @@ public class MatchScout implements ChangeListener{
         
         teamNumber = key;
         
+        l.add(new JLabel(teamNumber + " Match Sheet"));
+        
         mb = new JButton[metrics.size()][2];
         
         ms = new JSlider[metrics.size()];
@@ -61,61 +77,83 @@ public class MatchScout implements ChangeListener{
         
         p3 = new JPanel(new GridBagLayout());
         
-        f.add(p3, BorderLayout.NORTH);
-        
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
         addStatsScreen();
        
     }
 	
+	/**
+	 * 
+	 * @return Returns the team number the user is currently scouting
+	 */
+	public String getTeamNumber(){
+		
+		return teamNumber;
+		
+	}
+	
+	/**
+	 * 
+	 * @return Returns the Button the user clicks when the match is over
+	 */
 	public JButton getSaveMatchButton(){
 		
 		return saveMatch;
 		
 	}
 	
+	/**
+	 * 
+	 * @return Returns the JButtons that show up as + and - on the GUI
+	 */
 	public JButton[][] getDuelMetricButtons(){
 		
 		return mb;
 		
 	}
 	
+	/**
+	 * 
+	 * @return Returns the Text Fields that the user is entering information into
+	 */
 	public JTextField[] getMetricTextFields(){
 		
 		return mtf;
 		
 	}
 	
+	/**
+	 * 
+	 * @return Returns any JSliders the user might be using for things like a Defence Rating
+	 */
 	public JSlider[] getMetricSliders(){
 		
 		return ms;
 		
 	}
 	
+	/**
+	 * These Labels hold the actual information about what a team did for that metric
+	 * 
+	 * @return Returns the JLabels next to the input Components
+	 */
 	public JLabel[] getMetricLabels(){
 		
 		return ml;
 		
 	}
 	
-	
-	public void actionPerformed(ActionEvent e)
-    {
-        
-        
-        
-    }
-    
+	/**
+	 * Prepares and shows the screen the User uses to input data into the database
+	 */
 	public void addStatsScreen(){
     	//Getting the Content in Order
     	for(int i = 0; i < metrics.size(); i++){
+    		tl[i] = new JLabel();
     		tl[i].setText(metrics.get(i).getName());
     		
     		if(metrics.get(i).getInputType().equals("Buttons")){
     			JButton a = new JButton("+");
     	    	JButton b = new JButton("-");
-    			
     			
     			JLabel tl = new JLabel("0");
     			mb[i][0] = b;
@@ -213,7 +251,15 @@ public class MatchScout implements ChangeListener{
     	
     	g.gridy = y + 50;
     	
-    	p3.add(saveMatch,g);
+    	JPanel tempPanel = new JPanel(new BorderLayout());
+    	
+    	tempPanel.add(saveMatch,BorderLayout.SOUTH);
+    	
+    	tempPanel.add(p3, BorderLayout.NORTH);
+    	
+    	f.add(tempPanel);
+    	
+    	f.validate();
     	
     	f.setSize(mainFrame.getWidth() / 3, mainFrame.getHeight() * 2/3);
     	
@@ -224,9 +270,11 @@ public class MatchScout implements ChangeListener{
     	f.setVisible(true);
     	
     }
-    
-       
   
+	/**
+	 * Updates the file for the team currently being scouted by adding
+	 * the match informations the user just scouted
+	 */
     public void rewrite(){
         
         ArrayList<String> output = new ArrayList<String>();
@@ -237,7 +285,7 @@ public class MatchScout implements ChangeListener{
             for(int index = 0; index < metrics.size(); index++){
             	
             	if(index < (teams.get(teamNumber).get(i).size())){
-            		output.add(metrics.get(index).getName() + ": " + teams.get(i).get(index));
+            		output.add(metrics.get(index).getName() + ": " + teams.get(teamNumber).get(i).get(index));
             		
             	}else{
             		
@@ -268,8 +316,10 @@ public class MatchScout implements ChangeListener{
       
     }
 
-
-
+    /**
+     * Called when the user slides a JSlider and changes the Corresponding JLabel
+     * to reflect the value of the JSlider
+     */
 	public void stateChanged(ChangeEvent e) {
 		
 		for(int i = 0; i < ms.length; i++){
@@ -281,6 +331,15 @@ public class MatchScout implements ChangeListener{
 			}
 			
 		}
+		
+	}
+	
+	/**
+	 * Closed the Scouting Screen when the user is done with the match
+	 */
+	public void hideWindow(){
+		
+		f.dispose();
 		
 	}
 	

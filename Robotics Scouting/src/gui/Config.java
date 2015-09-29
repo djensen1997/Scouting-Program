@@ -7,7 +7,15 @@ import javax.swing.*;
 import utilities.*;
 
 import java.io.*;
-
+/**
+ * This Class Handles first time running of the program and
+ * Setting up Basic config settings like team Number and Game
+ * Year.
+ * 
+ * 
+ * @author DaneJensen
+ *
+ */
 public class Config
 {
     private String user = System.getProperty("user.name");
@@ -37,6 +45,9 @@ public class Config
     private FileOutput out = new FileOutput();
     
     @SuppressWarnings({})
+    /**
+     * 
+     */
 	public Config()
     {
         
@@ -87,7 +98,11 @@ public class Config
     }
     
     
-    
+    /**
+     * Makes the directory to the config File,
+     * 
+     * 
+     */
     private void generateConfig(){
         try{
             
@@ -99,6 +114,10 @@ public class Config
 
     }
     
+    /**
+     * Writes the config file
+     * 
+     */
     public void writeConfig(){
     	//"/Users/" + System.getProperty("user.name") +  "/Documents/Scouting Info/Config.txt"
     	
@@ -146,53 +165,86 @@ public class Config
   	  
   	  
     }
-    
-    public void getConfig(){
-        
-    }
-    
+    /**
+     * 
+     * @return Returns the Submit JButton for the Action Listener
+     */
     public JButton getButton(){
     	
     	return b;
     	
     }
     
+    /**
+     * 
+     * @return Returns the Teams Number Text Field
+     */
     public JTextField getT(){
     	
     	return t;
     	
     }
     
+    /**
+     * 
+     * @return Returns the Game Year Text Field
+     */
     public JTextField getT1(){
     	
     	return t1;
     	
     }
     
+    /**
+     * Sets the Team Number for the using Team
+     * 	-Note: This Number is only used for Cosmetic Purposes
+     * 
+     * @param team the team number for the user (Purly Cosmetic)
+     */
     public void setTeamNumber(String team){
     	
     	teamN = team;
     	
     }
     
+    /**
+     * Sets the Game Year for the current game being scouted for
+     *  -Used to sort different games and keep metrics and competitions separate
+     * 
+     * @param year The year of the Game Being Scouted for
+     */
     public void setGameYear(String year){
     	
     	gameYear = year;
     	
     }
     
+    /**
+     * The Admin Password is a safety net for people accidentally adding a team
+     * to the data base or metric to the data base that does not belong
+     * 
+     * @param Password The Admin Password for the Program
+     */
     public void setPassword(String Password){
     	
     	this.pword = Password;
     	
     }
     
+    /**
+     * 
+     * @return Returns the PasswordField that holds the User's admin Password
+     */
     public JPasswordField getAdminPasswordField(){
     	
     	return this.adminPassword;
     	
     }
     
+    /**
+     * Launches the Main Program, last thing to get called in this class,
+     * after every config setting has been set
+     */
     public void launchProgram(){
     	
     	f.dispose();
