@@ -1,19 +1,16 @@
 package gui;
 
 import objects.*;
-
+import gui.pictures.*;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
-
 import utilities.*;
-
 import javax.swing.*;
 
 /**
- * This is the Main Class for the Program.
- * It controls the main Frame for the gui and has direct access to
- * all aspects of the program.
+ * This is the Main Class for the Program. It controls the main Frame for the
+ * gui and has direct access to all aspects of the program.
  * 
  * @author DaneJensen
  *
@@ -93,14 +90,21 @@ public class MainScreen {
 
 	private JButton doNotAddTeam = new JButton("No");
 
+	private MyLogo myLogo = new MyLogo();
+	
+	private SponserImage sponserPanel = new SponserImage("2472logo.png");
+	
 	/**
 	 * The main constructor for the class, requires an action listener to be
-	 * refrenced for the rest of the program
+	 * Referenced for the rest of the program
 	 * 
-	 * @param myActionListener The Action Listener for the program
+	 * @param myActionListener
+	 *            The Action Listener for the program
 	 */
 	public MainScreen(MyActionListener myActionListener) {
-
+		
+		sponserPanel.setSize(300, 300);
+		
 		this.myActionListener = myActionListener;
 
 		addTeam.addActionListener(this.myActionListener);
@@ -150,14 +154,18 @@ public class MainScreen {
 
 		mainScreen = new JPanel(new BorderLayout());
 
-		mainMenu();
+		TopStats.setTeamMapRefrence(competingTeamsInfo);
 
+		TopStats.setMetricsRefrence(metrics);
+
+		mainMenu();
+		
 	}
 
 	/**
-	 * This Button is used to give the number of a team to the data base,
-	 * which then opens up a new frame that the user can input data on
-	 * pre-defined Metrics
+	 * This Button is used to give the number of a team to the data base, which
+	 * then opens up a new frame that the user can input data on pre-defined
+	 * Metrics
 	 * 
 	 * @return Returns the JButton on the main GUI
 	 */
@@ -166,12 +174,11 @@ public class MainScreen {
 		return read;
 
 	}
-	
+
 	/**
-	 * The map works in 3 levels
-	 * 	-Level 1 is the Main Key (the team number)
-	 * 	-Level 2 is the Match Number (starting at 0 of course)
-	 * 	-Level 3 is the Specific Metric Information
+	 * The map works in 3 levels -Level 1 is the Main Key (the team number)
+	 * -Level 2 is the Match Number (starting at 0 of course) -Level 3 is the
+	 * Specific Metric Information
 	 * 
 	 * @return Returns the map of all the teams
 	 */
@@ -180,10 +187,11 @@ public class MainScreen {
 		return competingTeamsInfo;
 
 	}
-	
+
 	/**
 	 * 
-	 * @return Returns the Array of Input Text Fields that have the team numbers in them
+	 * @return Returns the Array of Input Text Fields that have the team numbers
+	 *         in them
 	 */
 	public JTextField[] getTeamNumberInputFields() {
 
@@ -192,31 +200,41 @@ public class MainScreen {
 	}
 
 	/**
-	 * Adds the inputed team to the data base and immediately updates the
-	 * Teams Scouted.txt file to reflect the addition
+	 * Adds the inputed team to the data base and immediately updates the Teams
+	 * Scouted.txt file to reflect the addition
 	 * 
-	 * @param teamNumber The team Number to be added to the database
+	 * @param teamNumber
+	 *            The team Number to be added to the database
 	 */
 	public void addTeam(String teamNumber) {
+		
+		for(int i = 0; i < t.length; i++){
 
-		competingTeamsInfo.put(teamNumber, new ArrayList<ArrayList<String>>());
+			if(!competingTeamsInfo.containsKey(t[i].getText())){
+			
+				competingTeamsInfo.put(t[i].getText(), new ArrayList<ArrayList<String>>());
+			
+			}else{}
+		
+			t[i].setText("");
+			
+		}
 
 		saveTeamInfo();
 
 		mainMenu();
 
-		sendTeamNumber(teamNumber);
-
 	}
 
 	/**
-	 * "Sends" the specified team number to the Match Scout class for the
-	 * user to input a new match for this team into the database
+	 * "Sends" the specified team number to the Match Scout class for the user
+	 * to input a new match for this team into the database
 	 * 
 	 * If a match in the database is not found, the program prompts the user to
 	 * add it to the database
 	 * 
-	 * @param teamNumber The team number being scouted
+	 * @param teamNumber
+	 *            The team number being scouted
 	 */
 	public void sendTeamNumber(String teamNumber) {
 
@@ -227,6 +245,12 @@ public class MainScreen {
 		} else {
 
 			if (true) {// will change eventually
+				
+				for(int i = 0; i < t.length; i++){
+					
+					t[i].setText("");
+					
+				}
 
 				MatchScout data = new MatchScout(competingTeamsInfo, teamNumber, metrics, config, 0, myActionListener,
 						f);
@@ -283,8 +307,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * Updates the Teams Scouted.txt file to accurately reflect which teams
-	 * are in the data base for a specific event
+	 * Updates the Teams Scouted.txt file to accurately reflect which teams are
+	 * in the data base for a specific event
 	 */
 	private void saveTeamInfo() {
 
@@ -378,7 +402,7 @@ public class MainScreen {
 		return addTeam;
 
 	}
-	
+
 	/**
 	 * 
 	 * @return Returns the "NO, i would not like to add that team" button
@@ -390,8 +414,9 @@ public class MainScreen {
 	}
 
 	/**
-	 * Called When the program is first Opened, reads the config, game year, competitions and
-	 * teams scouted files to get all the information from the database
+	 * Called When the program is first Opened, reads the config, game year,
+	 * competitions and teams scouted files to get all the information from the
+	 * database
 	 */
 	private void getInformation() {
 
@@ -432,8 +457,6 @@ public class MainScreen {
 
 		for (int i = 0; i < metrics.size(); i++) {
 
-			
-			
 			String[] metricInfo = reader.readFile(
 					savePath + config.get("Game Year") + "/metrics/" + metrics.get(i).getName() + ".txt", ": ");
 
@@ -458,7 +481,7 @@ public class MainScreen {
 					}
 
 				}
-				
+
 			}
 
 		}
@@ -538,7 +561,7 @@ public class MainScreen {
 
 		mode = new JMenu("Scouting Mode");
 
-		fileItems = new JMenuItem[6];
+		fileItems = new JMenuItem[7];
 
 		modeItems = new JMenuItem[2];
 
@@ -607,7 +630,7 @@ public class MainScreen {
 		fileItems[4].setText("Compile Scouting Data");
 
 		fileItems[5].setText("Edit Metrics");
-
+		
 		for (int i = 0; i < fileItems.length; i++) {
 
 			file.add(fileItems[i]);
@@ -633,8 +656,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * Returns the GUI to the "Main Menu" or the initial Screen
-	 * when the Program is normally run
+	 * Returns the GUI to the "Main Menu" or the initial Screen when the Program
+	 * is normally run
 	 */
 	@SuppressWarnings("unused")
 	public void mainMenu() {
@@ -722,8 +745,16 @@ public class MainScreen {
 		g.gridx = g.gridx + 1;
 
 		tempPanel.add(read, g);
+		g.gridwidth = 10;
+		g.gridx = 0;
+		
+		g.gridy+=1;
+		
+		tempPanel.add(sponserPanel, g);
+		
+		//g.gridx = 10;
 
-		tempPanel.setBackground(Color.white);
+		//tempPanel.add(sponserPanel,g);
 
 		mainScreen.add(tempPanel, BorderLayout.NORTH);
 
@@ -738,7 +769,7 @@ public class MainScreen {
 		f.setLocation(0, 0);
 
 		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+		
 		f.validate();
 
 		f.setVisible(true);
@@ -746,8 +777,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * Prepares the GUI that allows the User to see and change the
-	 * Metric Information.
+	 * Prepares the GUI that allows the User to see and change the Metric
+	 * Information.
 	 */
 	public void metricMenu() {
 
@@ -818,8 +849,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * This ArrayList holds all the information on the Metrics, or data points being
-	 * Scouted for
+	 * This ArrayList holds all the information on the Metrics, or data points
+	 * being Scouted for
 	 * 
 	 * @return Returns the ArrayList of Metrics
 	 */
@@ -919,8 +950,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * The Add Game Year Button is used when the user has entered in a 
-	 * new game year and wants to add it to the database.
+	 * The Add Game Year Button is used when the user has entered in a new game
+	 * year and wants to add it to the database.
 	 * 
 	 * @return Returns the Add Game Year JButton
 	 */
@@ -931,8 +962,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * Shows up in almost all Menus, when pressed the program resets to
-	 * the Initial state when normally opened
+	 * Shows up in almost all Menus, when pressed the program resets to the
+	 * Initial state when normally opened
 	 * 
 	 * @return Returns the back Button
 	 */
@@ -943,13 +974,11 @@ public class MainScreen {
 	}
 
 	/**
-	 * Adds a new game Year to the data base, and generates all files required for a game year
-	 * Paths Generated:
-	 * /Scouting Info/game year
-	 * /Scouting Info/game year/metrics
-	 * /Scouting Info/game year/competitions.txt
-	 * /Scouting Info/game year/current competiton.txt
-	 * /Scouting Info/game year/metrics/metrics.txt
+	 * Adds a new game Year to the data base, and generates all files required
+	 * for a game year Paths Generated: /Scouting Info/game year /Scouting
+	 * Info/game year/metrics /Scouting Info/game year/competitions.txt
+	 * /Scouting Info/game year/current competiton.txt /Scouting Info/game
+	 * year/metrics/metrics.txt
 	 */
 	public void addGameYear() {
 
@@ -989,7 +1018,8 @@ public class MainScreen {
 	/**
 	 * Changes the game Year to a different Year
 	 * 
-	 * @param GameYear the year of the game the user wants to switch to
+	 * @param GameYear
+	 *            the year of the game the user wants to switch to
 	 */
 	private void changeGameYear(String GameYear) {
 
@@ -1000,7 +1030,7 @@ public class MainScreen {
 		getCompetitions();
 
 		saveConfig();
-		
+
 		getTeams();
 
 		prepMenuBar();
@@ -1043,7 +1073,8 @@ public class MainScreen {
 	}
 
 	/**
-	 * The program Reads the Years.txt file to know what games have existed and stores them in the program
+	 * The program Reads the Years.txt file to know what games have existed and
+	 * stores them in the program
 	 */
 	private void getGameYears() {
 		gameYears.clear();
@@ -1158,10 +1189,9 @@ public class MainScreen {
 	/**
 	 * Generates the files for a new competiton
 	 * 
-	 * Files Generated:
-	 * 	/Scouting Info/game year/competition/
-	 *  /Scouting Info/game year/competition/team data/
-	 *  /Scouting Info/game year/competition/Teams Scouted.txt
+	 * Files Generated: /Scouting Info/game year/competition/ /Scouting
+	 * Info/game year/competition/team data/ /Scouting Info/game
+	 * year/competition/Teams Scouted.txt
 	 */
 	private void generateCompetitionFiles() {
 		// Adds the Competition Folder and All Needed Files
@@ -1255,7 +1285,8 @@ public class MainScreen {
 	/**
 	 * Prepares the menu to edit a User Specified Metric
 	 * 
-	 * @param index The Index of the Metric the user wants to edit
+	 * @param index
+	 *            The Index of the Metric the user wants to edit
 	 */
 	public void changeMetricMenu(int index) {
 
@@ -1423,4 +1454,145 @@ public class MainScreen {
 
 	}
 
+	// All Labels assossiated with this are in the q array
+	public void topTeams(String Stat) {
+		g.insets = new Insets(1, 1, 1, 1);
+		int x = 0;
+		int y = 10;
+		g.gridx = x;
+		g.gridy = y;
+		g.gridwidth = 4;
+		JPanel tempPanel = new JPanel(new BorderLayout());
+		JPanel tempPanel2 = new JPanel(new GridBagLayout());
+		utilityFrame = new JFrame("");
+		
+		int[][] topTeams = TopStats.getAverageStats(Stat);
+		
+		JLabel[] q = new JLabel[31];
+		
+		for(int i = 0; i < q.length; i++){
+			
+			q[i] = new JLabel("");
+			
+		}
+
+		q[30].setFont(new Font("Impact", Font.BOLD, 40));
+
+		q[30].setText("Top " + Stat);
+		tempPanel2.add(q[30], g);
+		g.gridwidth = 1;
+		x = 4;
+		y = 50;
+		int bound = (topTeams.length / 2);
+		if (bound > 20) {
+			
+			bound = 20;
+
+		}
+
+		for (int i = 0; i < (bound); i++) {
+
+			if (x == 1) {
+
+				x = 4;
+
+			} else if (x == 4) {
+
+				x = 1;
+				y = (y + 1);
+
+			}
+			g.gridx = x;
+			g.gridy = y;
+			q[i].setText("Rank " + (i + 1) + ": " + topTeams[i][1]);
+			tempPanel2.add(q[i], g);
+
+		}
+		tempPanel.add(tempPanel2, BorderLayout.NORTH);
+		tempPanel.add(back, BorderLayout.SOUTH);
+		utilityFrame.add(tempPanel);
+
+		utilityFrame.setLocation(0, f.getHeight() / 3);
+
+		utilityFrame.setSize(f.getWidth(), f.getHeight() * 2 / 3);
+
+		utilityFrame.setUndecorated(true);
+
+		utilityFrame.setVisible(true);
+
+	}
+
+	public void topTeams() {
+		g.insets = new Insets(1, 1, 1, 1);
+		int x = 0;
+		int y = 10;
+		g.gridx = x;
+		g.gridy = y;
+		g.gridwidth = 4;
+		JPanel tempPanel = new JPanel(new BorderLayout());
+		JPanel tempPanel2 = new JPanel(new GridBagLayout());
+		utilityFrame = new JFrame("");
+		int[][] topTeams = TopStats.teamRankings();
+
+		JLabel[] q = new JLabel[31];
+		
+		for(int i = 0; i < q.length; i++){
+			
+			q[i] = new JLabel("");
+			
+		}
+		
+		q[30].setFont(new Font("Impact", Font.BOLD, 40));
+
+		q[30].setText("Top Teams");
+		tempPanel2.add(q[30], g);
+		g.gridwidth = 1;
+		x = 4;
+		y = 50;
+		int bound = (topTeams.length / 2);
+		if (bound > 30) {
+
+			bound = 30;
+
+		}
+
+		for (int i = 0; i < (bound); i++) {
+
+			if (x == 1) {
+
+				x = 4;
+
+			} else if (x == 4) {
+
+				x = 1;
+				y = (y + 1);
+
+			}
+			
+			g.gridx = x;
+			
+			g.gridy = y;
+			
+			q[i].setText("Rank " + (i + 1) + ": " + topTeams[i][1]);
+			
+			tempPanel2.add(q[i], g);
+
+		}
+		
+		tempPanel.add(tempPanel2, BorderLayout.NORTH);
+		
+		tempPanel.add(back, BorderLayout.SOUTH);
+		
+		utilityFrame.add(tempPanel);
+
+		utilityFrame.setLocation(0, f.getHeight() / 3);
+
+		utilityFrame.setSize(f.getWidth(), f.getHeight() * 2 / 3);
+
+		utilityFrame.setUndecorated(true);
+
+		utilityFrame.setVisible(true);
+
+	}
+	
 }

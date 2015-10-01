@@ -7,7 +7,6 @@ public class run {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		
 		@SuppressWarnings("unused")
 		Config c = new Config();
 		

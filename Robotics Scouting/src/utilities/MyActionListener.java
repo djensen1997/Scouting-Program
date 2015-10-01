@@ -108,6 +108,22 @@ public class MyActionListener implements ActionListener {
 		if (e.getSource() == main.getFileItems()[5])
 			main.metricSelector();
 
+		for(int i = 0; i < main.getMetrics().size(); i++){
+			
+			if(e.getSource() == main.getTopStatsItems()[i]){
+				
+				main.topTeams(main.getMetrics().get(i).getName());
+				
+			}
+			
+		}
+		
+		if(e.getSource() == main.getTopStatsItems()[main.getMetrics().size()]){
+			
+			main.topTeams();
+			
+		}
+		
 		if (e.getSource() == main.getSaveMetricButton()) {
 			JTextField[] metricTextFields = main.getMetricTextFields();
 			if (metricTextFields[0].getText().equals("")) {
@@ -169,8 +185,6 @@ public class MyActionListener implements ActionListener {
 			for (int i = 0; i < main.getTeamNumberInputFields().length; i++) {
 
 				main.sendTeamNumber(main.getTeamNumberInputFields()[i].getText());
-				
-				main.getTeamNumberInputFields()[i].setText("");
 
 			}
 

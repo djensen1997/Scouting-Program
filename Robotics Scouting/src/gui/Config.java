@@ -112,6 +112,17 @@ public class Config
             System.out.println(se);
         }
 
+        try{
+        	
+        	File imageFolder = new File("/Users/" + System.getProperty("user.name") + "/Documents/Scouting Info/Sponser Images");
+        	
+        	imageFolder.mkdir();
+        	
+        }catch(Exception e){
+        	
+        	System.out.println(e.toString());
+        	
+        }
     }
     
     /**
