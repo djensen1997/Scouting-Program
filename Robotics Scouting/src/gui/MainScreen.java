@@ -1,5 +1,5 @@
 package gui;
-
+//TODO go to every menu and have them set teamLogoFrame.setAlwaysOnTop(false);
 import objects.*;
 import gui.pictures.*;
 import java.awt.*;
@@ -93,6 +93,8 @@ public class MainScreen {
 	private MyLogo myLogo = new MyLogo();
 	
 	private SponserImage sponserPanel = new SponserImage("2472logo.png");
+	
+	private JFrame teamLogoFrame = new JFrame();
 	
 	/**
 	 * The main constructor for the class, requires an action listener to be
@@ -251,6 +253,8 @@ public class MainScreen {
 					t[i].setText("");
 					
 				}
+				
+				teamLogoFrame.setAlwaysOnTop(false);
 
 				MatchScout data = new MatchScout(competingTeamsInfo, teamNumber, metrics, config, 0, myActionListener,
 						f);
@@ -293,6 +297,8 @@ public class MainScreen {
 		tempPanel.add(tempPanel2, BorderLayout.CENTER);
 
 		tempPanel.add(back, BorderLayout.SOUTH);
+		
+		teamLogoFrame.setAlwaysOnTop(false);
 
 		utilityFrame.add(tempPanel);
 
@@ -748,14 +754,18 @@ public class MainScreen {
 		g.gridwidth = 10;
 		g.gridx = 0;
 		
-		g.gridy+=1;
+		g.gridy+=10;
 		
-		tempPanel.add(sponserPanel, g);
+		//tempPanel.add(sponserPanel);
 		
 		//g.gridx = 10;
 
 		//tempPanel.add(sponserPanel,g);
-
+		
+		teamLogoFrame.add(sponserPanel);
+		
+		teamLogoFrame.setSize(sponserPanel.getImageWidth(), sponserPanel.getImageHeight());
+		
 		mainScreen.add(tempPanel, BorderLayout.NORTH);
 
 		mainPanel.add(mainScreen, BorderLayout.CENTER);
@@ -773,6 +783,16 @@ public class MainScreen {
 		f.validate();
 
 		f.setVisible(true);
+		
+		try{Thread.sleep(1000);}catch(Exception e){}
+		
+		teamLogoFrame.setLocation(0, f.getHeight() - sponserPanel.getImageHeight());
+		
+		teamLogoFrame.setUndecorated(true);
+		
+		teamLogoFrame.setAlwaysOnTop(true);
+		
+		teamLogoFrame.setVisible(true);
 
 	}
 
@@ -814,6 +834,8 @@ public class MainScreen {
 
 		tempPanel.add(back, BorderLayout.SOUTH);
 
+		teamLogoFrame.setAlwaysOnTop(false);
+		
 		utilityFrame.add(tempPanel);
 
 		utilityFrame.setLocation(0, f.getHeight() / 3);
@@ -936,6 +958,8 @@ public class MainScreen {
 		tempPanel.add(tempPanel2, BorderLayout.CENTER);
 
 		tempPanel.add(back, BorderLayout.SOUTH);
+		
+		teamLogoFrame.setAlwaysOnTop(false);
 
 		utilityFrame.add(tempPanel);
 
@@ -1134,6 +1158,8 @@ public class MainScreen {
 		tempPanel2.add(addCompetition);
 
 		tempPanel.add(tempPanel2, BorderLayout.CENTER);
+		
+		teamLogoFrame.setAlwaysOnTop(false);
 
 		utilityFrame.add(tempPanel);
 
@@ -1259,6 +1285,8 @@ public class MainScreen {
 		tempPanel.add(back, BorderLayout.SOUTH);
 
 		tempPanel.add(tempPanel2, BorderLayout.CENTER);
+		
+		teamLogoFrame.setAlwaysOnTop(false);
 
 		utilityFrame.add(tempPanel);
 
@@ -1408,6 +1436,8 @@ public class MainScreen {
 		tempPanel3.add(back, BorderLayout.EAST);
 
 		tempPanel.add(tempPanel3, BorderLayout.SOUTH);
+		
+		teamLogoFrame.setAlwaysOnTop(false);
 
 		utilityFrame.add(tempPanel);
 
@@ -1456,6 +1486,7 @@ public class MainScreen {
 
 	// All Labels assossiated with this are in the q array
 	public void topTeams(String Stat) {
+		teamLogoFrame.setAlwaysOnTop(false);
 		g.insets = new Insets(1, 1, 1, 1);
 		int x = 0;
 		int y = 10;
@@ -1523,6 +1554,7 @@ public class MainScreen {
 	}
 
 	public void topTeams() {
+		teamLogoFrame.setAlwaysOnTop(false);
 		g.insets = new Insets(1, 1, 1, 1);
 		int x = 0;
 		int y = 10;

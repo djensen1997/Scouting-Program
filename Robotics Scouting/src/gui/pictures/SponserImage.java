@@ -63,7 +63,7 @@ public class SponserImage extends Component{
 		
 		setBackground(Color.white);
 		
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		g.drawImage(image, 0, 0, null);
 		
 	}
 	
@@ -105,6 +105,18 @@ public class SponserImage extends Component{
 			System.out.println(e.toString());
 			
 		}
+		
+	}
+	
+	public int getImageWidth(){
+		
+		return image.getWidth(null);
+		
+	}
+	
+	public int getImageHeight(){
+		
+		return image.getHeight(null);
 		
 	}
 	
