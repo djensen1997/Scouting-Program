@@ -90,6 +90,7 @@ public class MainScreen {
 
 	private JButton doNotAddTeam = new JButton("No");
 
+	@SuppressWarnings("unused")
 	private MyLogo myLogo = new MyLogo();
 	
 	private SponserImage sponserPanel = new SponserImage("2472logo.png");

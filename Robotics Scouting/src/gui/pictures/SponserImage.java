@@ -120,6 +120,7 @@ public class SponserImage extends Component{
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private void changeImage(int i){
 		
 		try{
