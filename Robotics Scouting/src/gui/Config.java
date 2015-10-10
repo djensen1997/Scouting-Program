@@ -12,7 +12,7 @@ public class Config
 {
     private String user = System.getProperty("user.name");
 
-    private File config = new File("/Users/" + user +  "/Documents/Scouting Info/");
+    private File config = new File("/C:/Users/" + user +  "/Documents/Scouting Info/");
     
     private String savePath = "/Users/" + user + "/Documents/Scouting Info/";
     
