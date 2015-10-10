@@ -37,7 +37,7 @@ public class MainScreen {
 
 	private JMenuItem[] fileItems, topStatsItems, competitionItems, modeItems;
 
-	private String savePath = "/Users/" + System.getProperty("user.name") + "/Documents/Scouting Info/";
+	private String savePath = "/C:/Users/" + System.getProperty("user.name") + "/Documents/Scouting Info/";
 
 	private JLabel[] l = new JLabel[7];
 

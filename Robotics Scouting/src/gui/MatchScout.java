@@ -30,7 +30,7 @@ public class MatchScout implements ChangeListener{
     private String teamNumber;
     private TreeMap<String, ArrayList<ArrayList<String>>> teams = new TreeMap<String, ArrayList<ArrayList<String>>>();
     private TreeMap<String, String> config = new TreeMap<String, String>();
-    private String savePath = "/Users/" + System.getProperty("user.name")
+    private String savePath = "/C:/Users/" + System.getProperty("user.name")
 			+ "/Documents/Scouting Info/";
     private FileOutput writer = new FileOutput();
     private JFrame mainFrame;
